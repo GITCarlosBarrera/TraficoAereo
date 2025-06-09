@@ -95,6 +95,8 @@ public class TorreDeControl {
                 try {
                     // ⚠ SISTEMA DE FALLO ALEATORIO ⚠
                     if (random.nextInt(100) < 15) {
+                        colaAterrizajes.add(a);
+                        colaAterrizajes.remove(colaAterrizajes.getFirst());
                         throw new FalloOperacionException("⚠ FALLO: " + a.getStringTipo() + "|" + a.getId() + " no ha podido aterrizar.");
                     } else {
                         Logger.log(a.getStringTipo() + "|" + a.getId() + " aterrizando en pista...");
@@ -128,28 +130,30 @@ public class TorreDeControl {
                 a = colaDespegues.getFirst();
 
                 try {
+                    Logger.log(a.getStringTipo() + "|" + a.getId() + " entrando en pista...");
+                    System.out.println(a.getStringTipo() + "|" + a.getId() + " entrando en pista...");
+
+                    sleep(3000);
+                    estado = EstadoPista.OCUPADA;
+
+                    Logger.log("=== Pista ocupada por " + a.getStringTipo() + "|" + a.getId() + " ===\n" +
+                            a.getStringTipo() + "|" + a.getId() + " procede con el despegue.");
+                    System.out.println("=== Pista ocupada por " + a.getStringTipo() + "|" + a.getId() + " ===\n" +
+                            a.getStringTipo() + "|" + a.getId() + " procede con el despegue.");
+
+                    sleep(2000);
                     // ⚠ SISTEMA DE FALLO ALEATORIO ⚠
                     if (random.nextInt(100) < 15) {
+                        colaDespegues.add(a);
+                        colaDespegues.remove(colaDespegues.getFirst());
                         throw new FalloOperacionException("⚠ FALLO: " + a.getStringTipo() + "|" + a.getId() + " no ha podido despegar.");
                     } else {
-                        Logger.log(a.getId() + " entrando en pista...");
-                        System.out.println(a.getId() + " entrando en pista...");
-
-                        sleep(3000);
-                        estado = EstadoPista.OCUPADA;
-
-                        Logger.log("=== Pista ocupada por " + a.getStringTipo() + "|" + a.getId() + " ===\n" +
-                                a.getStringTipo() + "|" + a.getId() + " procede con el despegue.");
-                        System.out.println("=== Pista ocupada por " + a.getStringTipo() + "|" + a.getId() + " ===\n" +
-                                a.getStringTipo() + "|" + a.getId() + " procede con el despegue.");
-
-                        sleep(2000);
                         liberarPista();
 
                         colaDespegues.remove(a);
 
-                        Logger.log(a.getId() + " ha despegado con éxito.");
-                        System.out.println(a.getId() + " ha despegado con éxito.");
+                        Logger.log(a.getStringTipo() + "|" + a.getId() + " ha despegado con éxito.");
+                        System.out.println(a.getStringTipo() + "|" + a.getId() + " ha despegado con éxito.");
 
                         sleep(500);
                         Logger.log("=== Pista libre ===");
@@ -160,8 +164,8 @@ public class TorreDeControl {
                     System.err.println(e.getMessage() + "\nIntentará el despegue nuevamente en breve.");
                     sleep(3000);
                 }
-            } else {
-                throw new PistaOcupadaException("No se puede registrar aterrizaje: pista ocupada.");
+            } else if (estado.equals(EstadoPista.OCUPADA)) {
+                throw new PistaOcupadaException("No se puede registrar despegue: pista ocupada.");
             }
         } catch (PistaOcupadaException e) {
             Logger.log(e.getMessage() + "\nSe procede a la liberación de la pista.");

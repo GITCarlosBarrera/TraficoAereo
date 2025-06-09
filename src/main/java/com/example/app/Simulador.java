@@ -5,6 +5,7 @@ import com.example.exception.AeronaveDuplicadaException;
 import com.example.model.*;
 import com.example.util.Logger;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -175,6 +176,7 @@ public class Simulador {
      * Ejecuta la simulación procesando cada evento por cada aeronave registrada en cada cola.
      */
     public static void comenzarSimulacion() {
+        Logger.firstLog();
         while (!torreDeControl.getColaDespegues().isEmpty() || !torreDeControl.getColaAterrizajes().isEmpty()) {
             torreDeControl.procesarSiguienteEvento();
         }
